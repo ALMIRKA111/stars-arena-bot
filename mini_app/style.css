@@ -1,0 +1,425 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+    background: #0a0f1e;
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    max-width: 400px;
+    width: 100%;
+    padding: 20px;
+}
+
+/* Шапка */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background: #1a1f30;
+    padding: 15px;
+    border-radius: 15px;
+}
+
+.balance {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.balance-label {
+    color: #8e9ab0;
+    font-size: 14px;
+}
+
+.balance-value {
+    font-size: 20px;
+    font-weight: bold;
+    color: #ffd700;
+}
+
+.balance-currency {
+    color: #ffd700;
+}
+
+.user {
+    color: white;
+    font-weight: 500;
+}
+
+/* Банк */
+.bank {
+    background: linear-gradient(135deg, #2a2f45, #1a1f30);
+    border-radius: 20px;
+    padding: 25px;
+    text-align: center;
+    margin-bottom: 30px;
+    border: 1px solid #3a4055;
+}
+
+.bank-label {
+    color: #8e9ab0;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.bank-value {
+    font-size: 48px;
+    font-weight: bold;
+    color: #ffd700;
+    line-height: 1;
+}
+
+.bank-currency {
+    font-size: 24px;
+    color: #ffd700;
+    margin-left: 5px;
+}
+
+/* Список игроков */
+.players-list {
+    background: #1a1f30;
+    border-radius: 15px;
+    padding: 15px;
+    margin-bottom: 30px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.player-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #2a2f45;
+}
+
+.player-item:last-child {
+    border-bottom: none;
+}
+
+.player-item.you {
+    background: #2a3a55;
+    border-radius: 8px;
+    margin: 5px 0;
+    padding: 12px 10px;
+    font-weight: bold;
+}
+
+.player-name {
+    color: white;
+}
+
+.player-percent {
+    color: #ffd700;
+    font-weight: bold;
+}
+
+/* Выбор суммы */
+.bet-section {
+    background: #1a1f30;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.amount-selector {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.amount-btn {
+    background: #2a2f45;
+    border: none;
+    color: white;
+    padding: 12px 5px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.amount-btn:hover {
+    background: #3a4055;
+}
+
+.amount-btn.selected {
+    background: #4a90e2;
+    box-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
+}
+
+/* Кнопка ОК */
+.ok-btn {
+    width: 100%;
+    background: #2a2f45;
+    border: 2px solid #4a90e2;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 15px;
+    transition: all 0.2s;
+}
+
+.ok-btn:hover {
+    background: #3a4055;
+}
+
+/* Информация о ставке */
+.current-bet {
+    background: #2a3a55;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 16px;
+    color: white;
+}
+
+.current-bet span {
+    color: #ffd700;
+    font-weight: bold;
+}
+
+/* Кнопка СДЕЛАТЬ СТАВКУ */
+.place-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #4a90e2, #357abd);
+    border: none;
+    color: white;
+    padding: 18px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.place-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(74, 144, 226, 0.4);
+}
+
+/* Скролл */
+.players-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.players-list::-webkit-scrollbar-track {
+    background: #1a1f30;
+}
+
+.players-list::-webkit-scrollbar-thumb {
+    background: #4a90e2;
+    border-radius: 3px;
+}
+
+/* Колесо рулетки */
+.wheel-container {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    margin: 20px auto;
+}
+
+.wheel {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #2a2f45;
+    position: relative;
+    overflow: hidden;
+    border: 4px solid #4a90e2;
+    box-shadow: 0 0 20px rgba(74, 144, 226, 0.3);
+    transition: transform 4s cubic-bezier(0.25, 0.1, 0.15, 1);
+}
+
+.wheel.spinning {
+    transition: transform 4s cubic-bezier(0.25, 0.1, 0.15, 1);
+}
+
+.wheel-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform: rotate(0deg);
+}
+
+.wheel-sector {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    left: 50%;
+    top: 0;
+    transform-origin: 0% 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 1px 1px 2px black;
+}
+
+.wheel-sector:nth-child(odd) {
+    background: #e74c3c;
+}
+
+.wheel-sector:nth-child(even) {
+    background: #2c3e50;
+}
+
+.wheel-sector span {
+    transform: rotate(90deg);
+    margin-left: 10px;
+}
+
+.wheel-pointer {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 30px;
+    color: #ffd700;
+    z-index: 10;
+    filter: drop-shadow(0 0 5px gold);
+}
+
+/* Результат */
+.result-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.result-content {
+    background: #1a1f30;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 300px;
+    border: 2px solid #4a90e2;
+}
+
+.result-title {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #ffd700;
+}
+
+.result-text {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.result-ok {
+    background: #4a90e2;
+    border: none;
+    color: white;
+    padding: 10px 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Вкладки */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    background: #1a1f30;
+    padding: 5px;
+    border-radius: 12px;
+}
+
+.tab {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    background: transparent;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.tab.active {
+    background: #4a90e2;
+    font-weight: bold;
+}
+
+/* Профиль */
+.profile-card {
+    background: #1a1f30;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.profile-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #2a2f45;
+}
+
+.profile-row:last-child {
+    border-bottom: none;
+}
+
+.profile-label {
+    color: #8e9ab0;
+}
+
+.profile-value {
+    color: #ffd700;
+    font-weight: bold;
+}
+
+.action-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.action-btn {
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.deposit {
+    background: #4a90e2;
+    color: white;
+}
+
+.withdraw {
+    background: #2a2f45;
+    color: white;
+    border: 1px solid #4a90e2;
+}

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stars Arena</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Шапка -->
+        <div class="header">
+            <div class="balance">
+                <span class="balance-label">Баланс</span>
+                <span class="balance-value" id="balance">0</span>
+                <span class="balance-currency">⭐</span>
+            </div>
+            <div class="user" id="username">Загрузка...</div>
+        </div>
+
+           <!-- Вкладки -->
+    <div class="tabs">
+        <button class="tab active" data-tab="game">🎰 Игра</button>
+        <button class="tab" data-tab="profile">👤 Профиль</button>
+        <button class="tab" data-tab="referrals">👥 Реф</button>
+    </div>
+
+        <!-- Банк -->
+        <div class="bank">
+            <div class="bank-label">БАНК</div>
+            <div class="bank-value" id="bank">0</div>
+            <div class="bank-currency">⭐</div>
+        </div>
+    <!-- Колесо рулетки -->
+    <div class="wheel-container">
+        <div class="wheel" id="wheel">
+            <div class="wheel-inner" id="wheelInner">
+                <!-- Сектора будут созданы через JS -->
+            </div>
+            <div class="wheel-pointer">▼</div>
+        </div>
+    </div>
+
+        <!-- Профиль (скрыт по умолчанию) -->
+<div id="profile-tab" class="tab-content" style="display: none;">
+    <div class="profile-card">
+        <div class="profile-row">
+            <span class="profile-label">Баланс:</span>
+            <span class="profile-value" id="profile-balance">0</span>
+            <span class="profile-currency">⭐</span>
+        </div>
+        <div class="profile-row">
+            <span class="profile-label">Всего игр:</span>
+            <span class="profile-value" id="total-games">0</span>
+        </div>
+        <div class="profile-row">
+            <span class="profile-label">Побед:</span>
+            <span class="profile-value" id="total-wins">0</span>
+        </div>
+        <div class="profile-row">
+            <span class="profile-label">Процент:</span>
+            <span class="profile-value" id="win-rate">0%</span>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <button class="action-btn deposit">📥 Пополнить</button>
+        <button class="action-btn withdraw">📤 Вывести</button>
+    </div>
+</div>
+
+<!-- Рефералы (скрыт по умолчанию) -->
+    <div id="referrals-tab" class="tab-content" style="display: none;">
+        <div class="referral-card">
+            <div class="referral-stats">
+                <div>Приглашено: <span id="ref-count">0</span></div>
+                <div>Заработано: <span id="ref-earned">0</span>⭐</div>
+            </div>
+            <div class="referral-link" id="ref-link">https://t.me/...</div>
+            <button class="copy-btn">📋 Копировать</button>
+        </div>
+    </div>
+
+        <!-- Список игроков с процентами -->
+        <div class="players-list" id="players-list">
+            <div class="player-item">
+                <span class="player-name">Игрок 1</span>
+                <span class="player-percent">34%</span>
+            </div>
+            <div class="player-item">
+                <span class="player-name">Игрок 2</span>
+                <span class="player-percent">28%</span>
+            </div>
+            <div class="player-item you">
+                <span class="player-name">You</span>
+                <span class="player-percent">38%</span>
+            </div>
+        </div>
+
+        <!-- Выбор суммы -->
+        <div class="bet-section">
+            <div class="amount-selector">
+                <button class="amount-btn" data-amount="10">10⭐</button>
+                <button class="amount-btn" data-amount="50">50⭐</button>
+                <button class="amount-btn" data-amount="100">100⭐</button>
+                <button class="amount-btn" data-amount="500">500⭐</button>
+            </div>
+
+            <!-- Кнопка ОК (подтверждение суммы) -->
+            <button class="ok-btn" id="ok-btn">ОК</button>
+
+            <!-- Информация о текущей ставке -->
+            <div class="current-bet" id="current-bet" style="display: none;">
+                Твоя ставка: <span id="bet-amount">0</span>⭐
+                | Твой шанс: <span id="bet-percent">0</span>%
+            </div>
+
+            <!-- Кнопка Сделать ставку -->
+            <button class="place-btn" id="place-bet" style="display: none;">СДЕЛАТЬ СТАВКУ</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
