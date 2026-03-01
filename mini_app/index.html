@@ -26,7 +26,6 @@
             padding: 20px;
         }
 
-        /* Шапка */
         .header {
             background: #1a1f30;
             padding: 15px 20px;
@@ -46,7 +45,6 @@
             font-weight: 500;
         }
 
-        /* Вкладки */
         .tabs {
             display: flex;
             gap: 10px;
@@ -64,7 +62,6 @@
             border-radius: 25px;
             cursor: pointer;
             font-size: 16px;
-            font-weight: 500;
         }
         .tab.active {
             background: #4a90e2;
@@ -78,7 +75,6 @@
             display: block;
         }
 
-        /* Банк */
         .bank {
             background: linear-gradient(135deg, #2a2f45, #1a1f30);
             border-radius: 30px;
@@ -98,7 +94,6 @@
             font-weight: bold;
         }
 
-        /* Рулетка (пустая) */
         .wheel-container {
             position: relative;
             width: 280px;
@@ -125,7 +120,6 @@
             filter: drop-shadow(0 0 5px gold);
         }
 
-        /* Проценты */
         .percentages {
             display: flex;
             justify-content: space-between;
@@ -146,7 +140,6 @@
             margin-top: 5px;
         }
 
-        /* Инфо о ставке */
         .bet-info {
             background: #2a3a55;
             padding: 15px;
@@ -157,7 +150,6 @@
             font-size: 16px;
         }
 
-        /* Поле ввода */
         .input-group {
             margin: 15px 0;
         }
@@ -176,7 +168,6 @@
             outline: none;
         }
 
-        /* Кнопки */
         .btn {
             width: 100%;
             padding: 18px;
@@ -201,7 +192,6 @@
             border: 1px solid #4a90e2;
         }
 
-        /* Профиль */
         .profile-card {
             background: #1a1f30;
             padding: 20px;
@@ -248,7 +238,6 @@
             font-size: 16px;
         }
 
-        /* Результат */
         .result-popup {
             position: fixed;
             top: 0;
@@ -292,33 +281,27 @@
 </head>
 <body>
     <div class="container">
-        <!-- Шапка -->
         <div class="header">
             <span class="balance" id="balance">0⭐</span>
             <span class="user" id="username">Загрузка...</span>
         </div>
 
-        <!-- Вкладки -->
         <div class="tabs">
             <button class="tab active" data-tab="pvp">Игра</button>
             <button class="tab" data-tab="profile">Профиль</button>
         </div>
 
-        <!-- Экран Игра -->
         <div id="pvp-tab" class="tab-content active">
-            <!-- Рулетка (пустая) -->
             <div class="wheel-container">
                 <div class="wheel" id="wheel"></div>
                 <div class="wheel-pointer">▼</div>
             </div>
 
-            <!-- Банк -->
             <div class="bank">
                 <div class="bank-label">БАНК</div>
                 <div class="bank-value" id="bank">0⭐</div>
             </div>
 
-            <!-- Проценты -->
             <div class="percentages">
                 <div class="percent-item">
                     <div class="percent-value" id="percent1">0%</div>
@@ -334,14 +317,12 @@
                 </div>
             </div>
 
-            <!-- Инфо о ставке -->
             <div class="bet-info" id="bet-info">
                 <span>Ставка: <span id="bet-amount">0</span>⭐</span>
                 <span>Шанс: <span id="bet-percent">0</span>%</span>
                 <span>Цвет: <span id="bet-color">—</span></span>
             </div>
 
-            <!-- Поле ввода -->
             <div class="input-group">
                 <input type="number" id="bet-input" class="amount-input" placeholder="Введи сумму ставки" min="1" value="10">
             </div>
@@ -349,7 +330,6 @@
             <button class="btn btn-primary" id="place-bet">СДЕЛАТЬ СТАВКУ</button>
         </div>
 
-        <!-- Экран Профиль -->
         <div id="profile-tab" class="tab-content">
             <div class="profile-card">
                 <div class="profile-actions">
@@ -388,7 +368,6 @@
         tg.ready();
         tg.expand();
 
-        // Данные
         let mockData = {
             balance: 0,
             bank: 0,
@@ -398,14 +377,12 @@
         };
         let isSpinning = false;
 
-        // Получаем пользователя
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
             document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name || 'Игрок';
         } else {
             document.getElementById('username').innerText = 'Тестовый режим';
         }
 
-        // Обновление интерфейса
         function updateUI() {
             document.getElementById('balance').innerText = mockData.balance + '⭐';
             document.getElementById('profile-balance').innerText = mockData.balance + '⭐';
@@ -415,7 +392,6 @@
             const winrate = mockData.players.length > 0 ? ((mockData.wins / mockData.players.length) * 100).toFixed(1) : 0;
             document.getElementById('profile-winrate').innerText = winrate + '%';
 
-            // Обновляем проценты
             if (mockData.players.length > 0) {
                 const total = mockData.players.reduce((sum, p) => sum + p.amount, 0);
                 const red = mockData.players.filter(p => p.color.includes('Красный')).reduce((sum, p) => sum + p.amount, 0);
@@ -432,7 +408,6 @@
             }
         }
 
-        // Переключение вкладок
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -444,7 +419,6 @@
             });
         });
 
-        // Крутить рулетку
         function spinWheel() {
             if (isSpinning) return;
             isSpinning = true;
@@ -502,7 +476,6 @@
             }, 6000);
         }
 
-        // Кнопка СДЕЛАТЬ СТАВКУ
         document.getElementById('place-bet').addEventListener('click', () => {
             const amount = parseInt(document.getElementById('bet-input').value);
 
@@ -542,7 +515,7 @@
             spinWheel();
         });
 
-        // НАСТОЯЩЕЕ ПОПОЛНЕНИЕ
+        // ПОПОЛНЕНИЕ - ТОЧНО КАК НА ФОТО
         document.getElementById('deposit-btn').addEventListener('click', () => {
             const amount = prompt('Введите сумму пополнения (от 10⭐):');
             if (amount) {
@@ -554,14 +527,7 @@
                         amount: numAmount
                     }));
 
-                    // Показываем сообщение
-                    tg.showPopup({
-                        title: 'Запрос отправлен',
-                        message: `Ожидайте счёт от бота на ${numAmount}⭐`,
-                        buttons: [{ type: 'ok' }]
-                    });
-
-                    // Закрываем Mini App
+                    // СРАЗУ ЗАКРЫВАЕМ MINI APP
                     tg.close();
                 } else {
                     tg.showAlert('❌ Минимальная сумма: 10⭐');
@@ -569,7 +535,6 @@
             }
         });
 
-        // Кнопка ВЫВЕСТИ
         document.getElementById('withdraw-btn').addEventListener('click', () => {
             const amount = prompt('Введите сумму для вывода (мин. 100⭐):');
             if (amount) {
@@ -600,7 +565,6 @@
             }
         });
 
-        // Партнёрская программа
         document.getElementById('partner-btn').addEventListener('click', () => {
             const userId = tg.initDataUnsafe.user?.id || 0;
             const refLink = `https://t.me/bot?start=ref_${userId}`;
@@ -620,12 +584,10 @@
             });
         });
 
-        // Поддержка
         document.getElementById('support-btn').addEventListener('click', () => {
             tg.openTelegramLink('https://t.me/support_bot');
         });
 
-        // Промокод
         document.getElementById('promo-btn').addEventListener('click', () => {
             const promo = prompt('Введите промокод:');
             if (promo && promo.toLowerCase() === 'arena') {
@@ -635,7 +597,6 @@
             }
         });
 
-        // Инициализация
         updateUI();
     </script>
 </body>
