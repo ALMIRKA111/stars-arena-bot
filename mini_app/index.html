@@ -9,115 +9,182 @@
 </head>
 <body>
     <div class="container">
-        <!-- Шапка -->
+        <!-- ШАПКА -->
         <div class="header">
             <div class="balance">
-                <span class="balance-label">Баланс</span>
                 <span class="balance-value" id="balance">0</span>
                 <span class="balance-currency">⭐</span>
             </div>
             <div class="user" id="username">Загрузка...</div>
         </div>
 
-           <!-- Вкладки -->
-    <div class="tabs">
-        <button class="tab active" data-tab="game">🎰 Игра</button>
-        <button class="tab" data-tab="profile">👤 Профиль</button>
-        <button class="tab" data-tab="referrals">👥 Реф</button>
-    </div>
-
-        <!-- Банк -->
-        <div class="bank">
-            <div class="bank-label">БАНК</div>
-            <div class="bank-value" id="bank">0</div>
-            <div class="bank-currency">⭐</div>
-        </div>
-    <!-- Колесо рулетки -->
-    <div class="wheel-container">
-        <div class="wheel" id="wheel">
-            <div class="wheel-inner" id="wheelInner">
-                <!-- Сектора будут созданы через JS -->
-            </div>
-            <div class="wheel-pointer">▼</div>
-        </div>
-    </div>
-
-        <!-- Профиль (скрыт по умолчанию) -->
-<div id="profile-tab" class="tab-content" style="display: none;">
-    <div class="profile-card">
-        <div class="profile-row">
-            <span class="profile-label">Баланс:</span>
-            <span class="profile-value" id="profile-balance">0</span>
-            <span class="profile-currency">⭐</span>
-        </div>
-        <div class="profile-row">
-            <span class="profile-label">Всего игр:</span>
-            <span class="profile-value" id="total-games">0</span>
-        </div>
-        <div class="profile-row">
-            <span class="profile-label">Побед:</span>
-            <span class="profile-value" id="total-wins">0</span>
-        </div>
-        <div class="profile-row">
-            <span class="profile-label">Процент:</span>
-            <span class="profile-value" id="win-rate">0%</span>
-        </div>
-    </div>
-
-    <div class="action-buttons">
-        <button class="action-btn deposit">📥 Пополнить</button>
-        <button class="action-btn withdraw">📤 Вывести</button>
-    </div>
-</div>
-
-<!-- Рефералы (скрыт по умолчанию) -->
-    <div id="referrals-tab" class="tab-content" style="display: none;">
-        <div class="referral-card">
-            <div class="referral-stats">
-                <div>Приглашено: <span id="ref-count">0</span></div>
-                <div>Заработано: <span id="ref-earned">0</span>⭐</div>
-            </div>
-            <div class="referral-link" id="ref-link">https://t.me/...</div>
-            <button class="copy-btn">📋 Копировать</button>
-        </div>
-    </div>
-
-        <!-- Список игроков с процентами -->
-        <div class="players-list" id="players-list">
-            <div class="player-item">
-                <span class="player-name">Игрок 1</span>
-                <span class="player-percent">34%</span>
-            </div>
-            <div class="player-item">
-                <span class="player-name">Игрок 2</span>
-                <span class="player-percent">28%</span>
-            </div>
-            <div class="player-item you">
-                <span class="player-name">You</span>
-                <span class="player-percent">38%</span>
-            </div>
-        </div>
-
-        <!-- Выбор суммы -->
-        <div class="bet-section">
-            <div class="amount-selector">
-                <button class="amount-btn" data-amount="10">10⭐</button>
-                <button class="amount-btn" data-amount="50">50⭐</button>
-                <button class="amount-btn" data-amount="100">100⭐</button>
-                <button class="amount-btn" data-amount="500">500⭐</button>
+        <!-- ЭКРАН PVP -->
+        <div id="pvp-tab" class="tab-content" style="display: block;">
+            <div class="bank">
+                <div class="bank-label">БАНК</div>
+                <div class="bank-value" id="bank-value">0</div>
+                <div class="bank-currency">⭐</div>
             </div>
 
-            <!-- Кнопка ОК (подтверждение суммы) -->
+            <div class="players-section">
+                <div class="players-header">
+                    <span>#</span>
+                    <span>Цвет</span>
+                    <span>Шанс</span>
+                </div>
+                <div id="players-list" class="players-list">
+                    <div class="empty-players">Пока нет ставок</div>
+                </div>
+            </div>
+
+            <div class="bet-info" id="bet-info" style="display: none;">
+                <span>Ставка: <span id="bet-amount-display">0</span>⭐</span>
+                <span>Шанс: <span id="bet-percent-display">0</span>%</span>
+                <span>Цвет: <span id="bet-color-display">Нет</span></span>
+            </div>
+
+            <div class="amount-input-group">
+                <input type="number" id="bet-amount-input" class="amount-input" placeholder="Введи сумму ставки" min="1" step="1">
+                <span class="input-currency">⭐</span>
+            </div>
+
             <button class="ok-btn" id="ok-btn">ОК</button>
+            <button class="place-btn" id="place-bet" style="display: none;">СДЕЛАТЬ СТАВКУ</button>
+        </div>
 
-            <!-- Информация о текущей ставке -->
-            <div class="current-bet" id="current-bet" style="display: none;">
-                Твоя ставка: <span id="bet-amount">0</span>⭐
-                | Твой шанс: <span id="bet-percent">0</span>%
+        <!-- ЭКРАН ПРОФИЛЬ -->
+        <div id="profile-tab" class="tab-content" style="display: none;">
+            <div class="profile-card">
+                <div class="profile-actions">
+                    <button class="profile-action deposit-btn" onclick="showDeposit()">📥 Пополнить</button>
+                    <button class="profile-action withdraw-btn" onclick="showWithdraw()">📤 Вывести</button>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Баланс</div>
+                        <div class="stat-value" id="profile-balance">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Всего игр</div>
+                        <div class="stat-value" id="profile-games">0</div>
+                    </div>
+                </div>
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Побед</div>
+                        <div class="stat-value" id="profile-wins">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Процент</div>
+                        <div class="stat-value" id="profile-winrate">0%</div>
+                    </div>
+                </div>
+
+                <div class="profile-menu">
+                    <button class="profile-menu-item partner-btn" onclick="showPartner()">👥 Партнёрская программа</button>
+                    <button class="profile-menu-item support-btn" onclick="showSupport()">🆘 Поддержка</button>
+                    <button class="profile-menu-item promo-btn" onclick="showPromo()">🎁 Промокод</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ЭКРАН ПОПОЛНЕНИЯ -->
+        <div id="deposit-screen" class="fullscreen" style="display: none;">
+            <div class="fullscreen-header">
+                <button class="back-btn" onclick="hideDeposit()">←</button>
+                <span>Пополнение</span>
             </div>
 
-            <!-- Кнопка Сделать ставку -->
-            <button class="place-btn" id="place-bet" style="display: none;">СДЕЛАТЬ СТАВКУ</button>
+            <div class="payment-methods">
+                <button class="payment-method active" data-method="stars">STARS</button>
+                <button class="payment-method" data-method="ton">TON</button>
+            </div>
+
+            <div class="amount-input-group large">
+                <input type="number" id="deposit-amount" class="amount-input" placeholder="Введите сумму" min="10" step="1">
+                <span class="input-currency">⭐</span>
+            </div>
+
+            <div class="info-text">Минимальное пополнение: 10⭐</div>
+            <div class="info-text">Комиссия: 0%</div>
+
+            <button class="action-btn large" onclick="processDeposit()">ВВОД</button>
+        </div>
+
+        <!-- ЭКРАН ВЫВОДА -->
+        <div id="withdraw-screen" class="fullscreen" style="display: none;">
+            <div class="fullscreen-header">
+                <button class="back-btn" onclick="hideWithdraw()">←</button>
+                <span>Вывод</span>
+            </div>
+
+            <div class="balance-info">
+                На балансе: <span id="withdraw-balance">0</span>⭐
+            </div>
+
+            <div class="amount-input-group large">
+                <input type="number" id="withdraw-amount" class="amount-input" placeholder="Введите сумму" min="100" step="1">
+                <span class="input-currency">⭐</span>
+            </div>
+
+            <div class="action-row">
+                <button class="small-btn" onclick="setMaxWithdraw()">Вывести все</button>
+                <button class="small-btn" onclick="showTransactions()">Транзакции</button>
+            </div>
+
+            <div class="info-text">Минимальный вывод: 100⭐</div>
+            <div class="info-text">Комиссия: 2%</div>
+
+            <button class="action-btn large" onclick="processWithdraw()">ВЫВЕСТИ</button>
+        </div>
+
+        <!-- ЭКРАН ПАРТНЁРСКОЙ ПРОГРАММЫ -->
+        <div id="partner-screen" class="fullscreen" style="display: none;">
+            <div class="fullscreen-header">
+                <button class="back-btn" onclick="hidePartner()">←</button>
+                <span>Партнёрская программа</span>
+            </div>
+
+            <div class="partner-info">
+                <div class="partner-title">ПРИГЛАШАЙТЕ ДРУЗЕЙ И ПОЛУЧАЙТЕ ⭐</div>
+
+                <div class="partner-link-section">
+                    <div class="partner-label">Ваша партнерская ссылка:</div>
+                    <div class="partner-link" id="partner-link" onclick="copyPartnerLink()">https://t.me/...</div>
+                </div>
+
+                <div class="partner-description">
+                    Вы получаете <span class="highlight">10%</span> от всех ставок ваших рефералов
+                </div>
+
+                <div class="partner-stats">
+                    <div class="stat-row">
+                        <span>Доход за всё время:</span>
+                        <span class="stat-value" id="partner-total">0⭐</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Рефералов:</span>
+                        <span class="stat-value" id="partner-refs">0 ЧЕЛ.</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Активные рефералы (1+ деп.):</span>
+                        <span class="stat-value" id="partner-active">0 ЧЕЛ.</span>
+                    </div>
+                    <div class="stat-row highlight-row">
+                        <span>Доступно к выводу:</span>
+                        <span class="stat-value" id="partner-available">0⭐</span>
+                    </div>
+                </div>
+
+                <button class="action-btn large" onclick="withdrawPartner()" id="partner-withdraw-btn" disabled>ВЫВЕСТИ (мин. 150⭐)</button>
+            </div>
+        </div>
+
+        <!-- НИЖНЯЯ НАВИГАЦИЯ -->
+        <div class="bottom-nav">
+            <button class="nav-btn active" id="pvp-btn">PVP</button>
+            <button class="nav-btn" id="profile-btn">Профиль</button>
         </div>
     </div>
 
