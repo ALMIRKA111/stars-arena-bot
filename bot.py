@@ -32,9 +32,11 @@ dp.include_router(games_router)
 # URL Mini App
 MINI_APP_URL = "https://almirka111.github.io/stars-arena-mini/"
 
+
 # ===== СОСТОЯНИЯ =====
 class WithdrawStates(StatesGroup):
     waiting_for_amount = State()
+
 
 # ===== КОМАНДЫ =====
 @dp.message(CommandStart())
@@ -83,6 +85,7 @@ async def cmd_start(message: Message):
 
     await message.answer(welcome_text, parse_mode='HTML', reply_markup=keyboard)
 
+
 @dp.message(Command("menu"))
 async def cmd_menu(message: Message):
     """Вернуться в меню"""
@@ -92,6 +95,41 @@ async def cmd_menu(message: Message):
         [InlineKeyboardButton(text="📊 Правила игры", callback_data="rules")]
     ])
     await message.answer("🎰 Главное меню:", reply_markup=keyboard)
+
+
+# ===== ОБРАБОТЧИК ДАННЫХ ИЗ MINI APP =====
+@dp.message(F.web_app_data)
+async def handle_web_app_data(message: Message):
+    """Обработка данных из Mini App"""
+    import json
+    from aiogram.types import LabeledPrice, InlineKeyboardMarkup, InlineKeyboardButton
+
+    data = json.loads(message.web_app_data.data)
+
+    if data['action'] == 'deposit':
+        amount = data['amount']
+
+        # Проверяем минимальную сумму
+        if amount < 10:
+            await message.answer("❌ Минимальная сумма пополнения: 10⭐")
+            return
+
+        # Создаём счёт в Telegram Stars
+        prices = [LabeledPrice(label="Пополнение баланса Stars Arena", amount=amount)]
+
+        await bot.send_invoice(
+            chat_id=message.chat.id,
+            title="Пополнение баланса",
+            description=f"Пополнение игрового счета на {amount} звезд",
+            payload=f"deposit_{message.from_user.id}_{amount}",
+            provider_token="",  # Пусто для Stars
+            currency="XTR",
+            prices=prices,
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text=f"💳 Оплатить {amount} ⭐", pay=True)]
+            ])
+        )
+
 
 # ===== ОБРАБОТЧИКИ КНОПОК =====
 @dp.callback_query(F.data == "profile")
@@ -130,6 +168,7 @@ async def show_profile(callback: CallbackQuery):
     await callback.message.edit_text(text, parse_mode='HTML', reply_markup=keyboard)
     await callback.answer()
 
+
 @dp.callback_query(F.data == "rules")
 async def show_rules(callback: CallbackQuery):
     """Показать правила игры"""
@@ -159,6 +198,7 @@ async def show_rules(callback: CallbackQuery):
     await callback.message.edit_text(text, parse_mode='HTML', reply_markup=keyboard)
     await callback.answer()
 
+
 @dp.callback_query(F.data == "back_to_main")
 async def back_to_main(callback: CallbackQuery):
     """Назад в главное меню"""
@@ -170,7 +210,7 @@ async def back_to_main(callback: CallbackQuery):
     await callback.message.edit_text("🎰 Главное меню:", reply_markup=keyboard)
     await callback.answer()
 
-# ===== ПОПОЛНЕНИЕ ЧЕРЕЗ STARS =====
+
 @dp.callback_query(F.data == "start_deposit")
 async def start_deposit(callback: CallbackQuery):
     """Начать пополнение"""
@@ -184,39 +224,15 @@ async def start_deposit(callback: CallbackQuery):
     await callback.message.edit_text(text, parse_mode='HTML')
     await callback.answer()
 
-@dp.message(F.text.regexp(r'^\d+$'))
-async def process_deposit_amount(message: Message):
-    """Обработка введенной суммы"""
-    amount = int(message.text)
 
-    if amount < 10:
-        await message.answer("❌ Минимальная сумма: 10⭐")
-        return
-
-    # Создаем счет в Telegram Stars
-    prices = [LabeledPrice(label="Пополнение баланса Stars Arena", amount=amount)]
-
-    await bot.send_invoice(
-        chat_id=message.chat.id,
-        title="Пополнение баланса",
-        description=f"Пополнение игрового счета на {amount} звезд",
-        payload=f"deposit_{message.from_user.id}_{amount}",
-        provider_token="",
-        currency="XTR",
-        prices=prices,
-        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text=f"💳 Оплатить {amount} ⭐", pay=True)]
-        ])
-    )
-
-# ===== ПРЕДПРОВЕРКА ПЛАТЕЖА =====
+# ===== ПЛАТЕЖИ =====
 @dp.pre_checkout_query()
 async def pre_checkout_handler(pre_checkout_query: PreCheckoutQuery):
     """Подтверждение платежа"""
     await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
     logger.info(f"✅ Платеж подтвержден: {pre_checkout_query.invoice_payload}")
 
-# ===== УСПЕШНЫЙ ПЛАТЕЖ =====
+
 @dp.message(F.successful_payment)
 async def successful_payment_handler(message: Message):
     """Обработка успешного платежа"""
@@ -261,6 +277,7 @@ async def successful_payment_handler(message: Message):
             parse_mode='HTML'
         )
 
+
 # ===== ВЫВОД СРЕДСТВ =====
 @dp.callback_query(F.data == "withdraw_menu")
 async def withdraw_menu(callback: CallbackQuery):
@@ -288,6 +305,7 @@ async def withdraw_menu(callback: CallbackQuery):
 
     await callback.message.edit_text(text, parse_mode='HTML', reply_markup=keyboard)
     await callback.answer()
+
 
 @dp.callback_query(F.data == "withdraw_start")
 async def withdraw_start(callback: CallbackQuery, state: FSMContext):
@@ -319,6 +337,7 @@ async def withdraw_start(callback: CallbackQuery, state: FSMContext):
     await state.set_state(WithdrawStates.waiting_for_amount)
     await callback.message.edit_text(text, parse_mode='HTML')
     await callback.answer()
+
 
 @dp.message(WithdrawStates.waiting_for_amount)
 async def process_withdraw_amount(message: Message, state: FSMContext):
@@ -366,6 +385,7 @@ async def process_withdraw_amount(message: Message, state: FSMContext):
 
     await state.clear()
 
+
 @dp.callback_query(F.data == "withdraw_history")
 async def withdraw_history(callback: CallbackQuery):
     """История выводов пользователя"""
@@ -404,6 +424,7 @@ async def withdraw_history(callback: CallbackQuery):
         ])
     )
     await callback.answer()
+
 
 # ===== ПАРТНЕРСКАЯ ПРОГРАММА =====
 @dp.callback_query(F.data == "partner")
@@ -456,6 +477,7 @@ async def partner_program(callback: CallbackQuery):
     await callback.message.edit_text(text, parse_mode='HTML', reply_markup=keyboard)
     await callback.answer()
 
+
 @dp.callback_query(F.data == "copy_ref")
 async def copy_ref_link(callback: CallbackQuery):
     """Копирование реферальной ссылки"""
@@ -468,6 +490,7 @@ async def copy_ref_link(callback: CallbackQuery):
         parse_mode='HTML'
     )
     await callback.answer()
+
 
 # ===== АДМИН-КОМАНДЫ =====
 @dp.message(Command("approve"))
@@ -517,6 +540,7 @@ async def approve_withdrawal(message: Message):
     except (IndexError, ValueError):
         await message.answer("❌ Используйте: /approve <номер заявки>")
 
+
 @dp.message(Command("reject"))
 async def reject_withdrawal(message: Message):
     """Отклонение вывода (админ)"""
@@ -563,11 +587,13 @@ async def reject_withdrawal(message: Message):
     except (IndexError, ValueError):
         await message.answer("❌ Используйте: /reject <номер заявки>")
 
+
 # ===== ЗАПУСК =====
 async def main():
     logger.info("🚀 Запуск бота Stars Arena...")
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
+
 
 if __name__ == "__main__":
     asyncio.run(main())

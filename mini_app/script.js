@@ -166,12 +166,13 @@ function processDeposit() {
         return;
     }
 
-    // Отправляем команду боту через Telegram
+    // Отправляем данные боту через Telegram WebApp
     tg.sendData(JSON.stringify({
         action: 'deposit',
         amount: parseInt(amount)
     }));
 
+    // Закрываем Mini App — бот пришлёт счёт в чат
     tg.close();
 }
 
