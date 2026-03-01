@@ -182,10 +182,7 @@ if (depositBtn) {
         });
 
         tg.close();
-    }
-
-   }
-
+    });
 }
 
 // ===== ВЫВОД =====
@@ -242,7 +239,36 @@ if (promoBtn) {
             mockData.balance += 50;
             updateUI();
         }
+    });
+}
+
+// Функция для пополнения (для onclick)
+function showDeposit() {
+    let amount = prompt('Введите сумму пополнения (от 10⭐):');
+    if (amount) {
+        amount = parseInt(amount);
+        if (amount >= 10) {
+            tg.sendData(JSON.stringify({
+                action: 'deposit',
+                amount: amount
+            }));
+
+            tg.showPopup({
+                title: 'Запрос отправлен',
+                message: `Ожидайте счёт на ${amount}⭐`,
+                buttons: [{ type: 'ok' }]
+            });
+
+            tg.close();
+        } else {
+            tg.showAlert('❌ Минимальная сумма: 10⭐');
+        }
     }
+}
+
+// Функция для вывода (для onclick)
+function showWithdraw() {
+    tg.showAlert('Вывод временно недоступен');
 }
 
 // Инициализация
