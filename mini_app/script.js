@@ -182,7 +182,10 @@ if (depositBtn) {
         });
 
         tg.close();
-    });
+    }
+
+   }
+
 }
 
 // ===== ВЫВОД =====
@@ -239,7 +242,7 @@ if (promoBtn) {
             mockData.balance += 50;
             updateUI();
         }
-    });
+    }
 }
 
 // Инициализация
