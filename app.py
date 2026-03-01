@@ -1,8 +1,7 @@
 from flask import Flask, send_from_directory
 import os
-import asyncio
-from threading import Thread
 import sys
+import multiprocessing
 
 app = Flask(__name__, static_folder='mini_app')
 
@@ -18,18 +17,16 @@ def serve_static_files(path):
 
 
 def run_bot():
-    """Запускает бота в отдельном процессе, а не потоке"""
+    """Запускает бота в отдельном ПРОЦЕССЕ (не потоке)"""
     import subprocess
     subprocess.run([sys.executable, "bot.py"])
 
 
 if __name__ == "__main__":
-    # Запускаем бота в ОТДЕЛЬНОМ ПРОЦЕССЕ (не потоке)
-    import multiprocessing
-
+    # Запускаем бота в отдельном процессе
     bot_process = multiprocessing.Process(target=run_bot)
     bot_process.start()
 
-    # Запускаем веб-сервер
-    port = int(os.environ.get('PORT', 8000))
+    # Запускаем Flask
+    port = int(os.environ.get('PORT', 3000))
     app.run(host='0.0.0.0', port=port)
