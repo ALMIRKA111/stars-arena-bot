@@ -157,6 +157,7 @@ function hideDeposit() {
     document.getElementById('deposit-screen').style.display = 'none';
 }
 
+// Вместо текущей имитации
 function processDeposit() {
     const amount = document.getElementById('deposit-amount').value;
 
