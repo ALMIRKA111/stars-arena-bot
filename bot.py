@@ -6,6 +6,7 @@ from aiogram.filters import Command
 from aiogram.types import Message, LabeledPrice, PreCheckoutQuery
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.types import LabeledPrice
 
 # Настройки
 BOT_TOKEN = "8601754069:AAEmsv40xs0M77p6Z3n0t25sJp3fpJ8a_4k"
@@ -54,6 +55,16 @@ async def handle_web_app_data(message: Message):
             currency="XTR",
             prices=[LabeledPrice(label="Пополнение", amount=amount)]
         )
+
+
+@dp.message(F.web_app_data)
+async def handle_web_app_data(message: Message):
+    data = json.loads(message.web_app_data.data)
+    print(f"✅ Получены данные: {data}")  # ← ДОБАВЬ ЭТО
+
+    if data['action'] == 'deposit':
+        amount = data['amount']
+        # ... остальной код
 
 
 # ===== ПРЕДПРОВЕРКА ПЛАТЕЖА =====
