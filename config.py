@@ -24,5 +24,7 @@ class Config:
     # Минимальные ставки
     MIN_BET_STARS = 10  # минимум 10 звезд
     MIN_BET_TON = 0.1  # минимум 0.1 TON
+# В конец файла добавь:
+MINI_APP_URL = "https://ALMIRKA111.github.io/stars-arena-mini/"
 
 config = Config()

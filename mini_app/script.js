@@ -158,17 +158,20 @@ function hideDeposit() {
 }
 
 function processDeposit() {
-    const amount = parseInt(document.getElementById('deposit-amount').value);
+    const amount = document.getElementById('deposit-amount').value;
 
     if (!amount || amount < 10) {
-        tg.showAlert('❌ Минимальная сумма пополнения: 10⭐');
+        tg.showAlert('❌ Минимальная сумма: 10⭐');
         return;
     }
 
-    mockData.balance += amount;
-    updateUI();
-    hideDeposit();
-    tg.showAlert(`✅ Пополнено ${amount}⭐`);
+    // Отправляем команду боту через Telegram
+    tg.sendData(JSON.stringify({
+        action: 'deposit',
+        amount: parseInt(amount)
+    }));
+
+    tg.close();
 }
 
 // Выбор метода пополнения
@@ -400,8 +403,3 @@ function showWinner(winner) {
 
 // Инициализация
 updateUI();
-
-// Кнопка Telegram
-tg.MainButton.setText('🔄 Обновить');
-tg.MainButton.onClick(updateUI);
-tg.MainButton.show();
