@@ -2,6 +2,7 @@ from flask import Flask, send_from_directory
 import os
 import sys
 import multiprocessing
+import time
 
 app = Flask(__name__, static_folder='mini_app')
 
@@ -17,7 +18,7 @@ def serve_static_files(path):
 
 
 def run_bot():
-    """Запускает бота в отдельном ПРОЦЕССЕ (не потоке)"""
+    """Запускает бота"""
     import subprocess
     subprocess.run([sys.executable, "bot.py"])
 
@@ -25,7 +26,11 @@ def run_bot():
 if __name__ == "__main__":
     # Запускаем бота в отдельном процессе
     bot_process = multiprocessing.Process(target=run_bot)
+    bot_process.daemon = True  # Процесс завершится вместе с главным
     bot_process.start()
+
+    # Даем боту время запуститься
+    time.sleep(2)
 
     # Запускаем Flask
     port = int(os.environ.get('PORT', 3000))
