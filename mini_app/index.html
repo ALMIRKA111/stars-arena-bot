@@ -13,7 +13,7 @@
 
         async function testPayment() {
             try {
-                const response = await fetch('http://192.168.1.36:8080/api/create-invoice', {
+                const response = await fetch('https://a7b1eec5fdae13e9-95-26-84-7.serveousercontent.com/api/create-invoice', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ amount: 100 })
