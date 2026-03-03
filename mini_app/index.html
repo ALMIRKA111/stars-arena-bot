@@ -584,8 +584,7 @@
         tg.expand();
 
         // ===== КОНФИГУРАЦИЯ =====
-        // Замени на URL твоего сервера
-        const API_URL = 'http://192.168.1.36:8080'
+        const API_URL = 'http://192.168.1.36:8080';
 
         // Данные
         let mockData = {
@@ -605,10 +604,11 @@
             document.getElementById('username').innerText = 'Тестовый режим';
         }
 
-        // ===== ФУНКЦИЯ ПОПОЛНЕНИЯ (правильная) =====
+        // ===== ФУНКЦИЯ ПОПОЛНЕНИЯ =====
         async function processDeposit(amount) {
             try {
-                // 1. Запрашиваем ссылку у бота
+                console.log('processDeposit вызвана, amount =', amount);
+
                 const response = await fetch(`${API_URL}/api/create-invoice`, {
                     method: 'POST',
                     headers: {
@@ -617,17 +617,18 @@
                     body: JSON.stringify({ amount: amount })
                 });
 
+                console.log('Статус ответа:', response.status);
                 const data = await response.json();
+                console.log('Данные ответа:', data);
 
                 if (!data.success) {
                     tg.showAlert('❌ Ошибка создания платежа');
                     return;
                 }
 
-                // 2. Открываем окно оплаты Telegram
                 tg.openInvoice(data.link, function(status) {
+                    console.log('Статус оплаты:', status);
                     if (status === 'paid') {
-                        // Оплата успешна
                         mockData.balance += amount;
                         updateUI();
                         tg.showPopup({
@@ -714,7 +715,7 @@
             });
         });
 
-        // Кнопка ВВОД (пополнение)
+        // Кнопка ВВОД (пополнение) - ИСПРАВЛЕНО!
         document.getElementById('wallet-submit').addEventListener('click', async () => {
             const amount = parseInt(document.getElementById('wallet-amount').value);
 
@@ -723,10 +724,7 @@
                 return;
             }
 
-            // Вызываем функцию пополнения
             await processDeposit(amount);
-
-            // Закрываем экран пополнения
             hideWallet();
         });
 
@@ -761,7 +759,6 @@
                 return;
             }
 
-            // Здесь будет отправка заявки на вывод
             tg.showPopup({
                 title: '✅ Заявка создана',
                 message: `Заявка на вывод ${amount}⭐ отправлена администратору`,
