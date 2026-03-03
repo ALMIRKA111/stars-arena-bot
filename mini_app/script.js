@@ -242,34 +242,42 @@ if (promoBtn) {
     });
 }
 
-// Функция для пополнения (для onclick)
-function showDeposit() {
-    let amount = prompt('Введите сумму пополнения (от 10⭐):');
-    if (amount) {
-        amount = parseInt(amount);
-        if (amount >= 10) {
-            tg.sendData(JSON.stringify({
-                action: 'deposit',
-                amount: amount
-            }));
+// ===== ФУНКЦИЯ ПОПОЛНЕНИЯ (исправленная) =====
+async function processDeposit(amount) {
+    try {
+        const response = await fetch(`${API_URL}/api/create-invoice`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ amount: amount })
+        });
 
-            tg.showPopup({
-                title: 'Запрос отправлен',
-                message: `Ожидайте счёт на ${amount}⭐`,
-                buttons: [{ type: 'ok' }]
-            });
+        const data = await response.json();
 
-            tg.close();
-        } else {
-            tg.showAlert('❌ Минимальная сумма: 10⭐');
+        if (!data.success) {
+            tg.showAlert('❌ Ошибка создания платежа');
+            return;
         }
+
+        tg.openInvoice(data.link, function(status) {
+            if (status === 'paid') {
+                mockData.balance += amount;
+                updateUI();
+                tg.showPopup({
+                    title: '✅ Успешно',
+                    message: `Пополнено ${amount}⭐`,
+                    buttons: [{ type: 'ok' }]
+                });
+            } else if (status === 'failed') {
+                tg.showAlert('❌ Ошибка оплаты');
+            } else if (status === 'cancelled') {
+                tg.showAlert('❌ Платеж отменен');
+            }
+        });
+
+    } catch (error) {
+        console.error('Ошибка:', error);
+        tg.showAlert('❌ Ошибка соединения с сервером');
     }
 }
-
-// Функция для вывода (для onclick)
-function showWithdraw() {
-    tg.showAlert('Вывод временно недоступен');
-}
-
-// Инициализация
-updateUI();
