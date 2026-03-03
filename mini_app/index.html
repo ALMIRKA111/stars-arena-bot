@@ -1,62 +1,36 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stars Arena</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body { background: #0a0f1e; color: white; font-family: sans-serif; padding: 20px; }
-        .btn {
-            background: #4a90e2;
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 10px;
-            font-size: 18px;
-            cursor: pointer;
-            margin: 10px 0;
-            width: 100%;
-        }
-        .wallet-screen {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: #0a0f1e;
-            display: none;
-            padding: 20px;
-        }
-    </style>
 </head>
 <body>
-    <div class="container">
-        <button class="btn" id="depositBtn">📥 Пополнить</button>
-    </div>
-
-    <div id="walletScreen" class="wallet-screen">
-        <button onclick="hideWallet()">← Назад</button>
-        <h2>Пополнение</h2>
-        <input type="number" id="amountInput" placeholder="Сумма" min="10" value="100">
-        <button class="btn" id="submitBtn">ВВОД</button>
-    </div>
+    <button onclick="testPayment()">Тест оплаты 100⭐</button>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.ready();
 
-        // Прямое назначение обработчиков
-        document.getElementById('depositBtn').onclick = function() {
-            document.getElementById('walletScreen').style.display = 'block';
-        };
+        async function testPayment() {
+            try {
+                const response = await fetch('http://192.168.1.36:8080/api/create-invoice', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount: 100 })
+                });
 
-        window.hideWallet = function() {
-            document.getElementById('walletScreen').style.display = 'none';
-        };
-
-        document.getElementById('submitBtn').onclick = function() {
-            let amount = document.getElementById('amountInput').value;
-            alert('Пополнение на ' + amount + '⭐');
-            hideWallet();
-        };
+                const data = await response.json();
+                if (data.success) {
+                    tg.openInvoice(data.link, function(status) {
+                        alert('Статус: ' + status);
+                    });
+                } else {
+                    alert('Ошибка: ' + data.error);
+                }
+            } catch (e) {
+                alert('Ошибка соединения: ' + e);
+            }
+        }
     </script>
 </body>
 </html>
